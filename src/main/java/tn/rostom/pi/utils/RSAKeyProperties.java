@@ -1,4 +1,4 @@
-package tn.zeros.smg.utils;
+package tn.rostom.pi.utils;
 
 import lombok.Getter;
 import lombok.Setter;

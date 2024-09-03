@@ -1,4 +1,4 @@
-package tn.zeros.smg.config;
+package tn.rostom.pi.config;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -27,19 +27,8 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import tn.zeros.smg.utils.RSAKeyProperties;
+import tn.rostom.pi.utils.RSAKeyProperties;
 
-/**
- * Configures the security filter chain for the application.
- * This method sets up the authorization rules, JWT authentication, and session management for the application.
- * It allows public access to certain endpoints (e.g. API documentation, login, registration) and requires authentication for all other requests.
- * The JWT authentication is configured to use the `jwtAuthenticationConverter` bean to extract authorities from the JWT token.
- * The session management is configured to use a stateless session policy, which means no session is created or used.
- *
- * @param http the HttpSecurity object used to configure the security filter chain
- * @return the configured SecurityFilterChain
- * @throws Exception if there is an error configuring the security filter chain
- */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -48,24 +37,11 @@ public class SecurityConfig {
     private final RSAKeyProperties keys;
     private final UserDetailsService userDetailsService;
 
-    /**
-     * Provides a password encoder implementation using BCrypt.
-     * This bean is used to encode and decode passwords for user authentication.
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Configures the authentication manager for the application.
-     * This method sets up the user details service and password encoder to be used for authentication.
-     * The authentication manager is then returned as a Spring bean.
-     *
-     * @param http the HttpSecurity object used to configure the security filter chain
-     * @return the configured AuthenticationManager
-     * @throws Exception if there is an error configuring the authentication manager
-     */
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
@@ -75,17 +51,6 @@ public class SecurityConfig {
                 .build();
     }
 
-    /**
-     * Configures the security filter chain for the application.
-     * This method sets up the authorization rules, JWT authentication, and session management for the application.
-     * It allows public access to certain endpoints (e.g. API documentation, login, registration) and requires authentication for all other requests.
-     * The JWT authentication is configured to use the `jwtAuthenticationConverter` bean to extract authorities from the JWT token.
-     * The session management is configured to use a stateless session policy, which means no session is created or used.
-     *
-     * @param http the HttpSecurity object used to configure the security filter chain
-     * @return the configured SecurityFilterChain
-     * @throws Exception if there is an error configuring the security filter chain
-     */
     @Bean
     @Order(1)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -104,23 +69,11 @@ public class SecurityConfig {
                 .build();
     }
 
-    /**
-     * Creates a JWT decoder that uses the public key to verify JWT tokens.
-     * This bean is used to decode and validate JWT tokens received in requests.
-     *
-     * @return a JWT decoder instance that uses the configured public key
-     */
     @Bean
     public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(keys.getPublicKey()).build();
     }
 
-    /**
-     * Creates a JWT encoder that uses the configured public and private keys to sign JWT tokens.
-     * This bean is used to generate and sign JWT tokens that can be used for authentication and authorization.
-     *
-     * @return a JWT encoder instance that uses the configured public and private keys
-     */
     @Bean
     public JwtEncoder jwtEncoder() {
         JWK jwk = new RSAKey.Builder(keys.getPublicKey()).privateKey(keys.getPrivateKey()).build();
@@ -128,13 +81,6 @@ public class SecurityConfig {
         return new NimbusJwtEncoder(jwks);
     }
 
-    /**
-     * Creates a JWT authentication converter that extracts authorities from the JWT token.
-     * The converter is configured to use the "roles" claim in the JWT token as the authorities,
-     * and it prefixes the authorities with "ROLE_".
-     *
-     * @return a JWT authentication converter instance
-     */
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();

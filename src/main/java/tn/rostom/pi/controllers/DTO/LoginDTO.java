@@ -1,4 +1,4 @@
-package tn.zeros.smg.controllers.DTO;
+package tn.rostom.pi.controllers.DTO;
 
 import lombok.*;
 
@@ -8,6 +8,6 @@ import lombok.*;
 @Setter
 @ToString
 public class LoginDTO {
-    private String code;
+    private String email;
     private String password;
 }

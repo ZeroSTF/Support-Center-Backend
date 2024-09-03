@@ -1,9 +1,9 @@
-package tn.zeros.smg.repositories;
+package tn.rostom.pi.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import tn.zeros.smg.entities.Role;
-import tn.zeros.smg.entities.enums.TypeRole;
+import tn.rostom.pi.entities.Role;
+import tn.rostom.pi.entities.enums.TypeRole;
 
 import java.util.Optional;
 @Repository

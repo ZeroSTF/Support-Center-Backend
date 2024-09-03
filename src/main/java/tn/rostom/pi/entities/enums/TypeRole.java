@@ -1,4 +1,4 @@
-package tn.zeros.smg.entities.enums;
+package tn.rostom.pi.entities.enums;
 
 public enum TypeRole {
     USER,

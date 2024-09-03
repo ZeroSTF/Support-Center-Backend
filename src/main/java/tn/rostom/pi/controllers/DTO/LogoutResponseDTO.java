@@ -1,4 +1,4 @@
-package tn.zeros.smg.controllers.DTO;
+package tn.rostom.pi.controllers.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

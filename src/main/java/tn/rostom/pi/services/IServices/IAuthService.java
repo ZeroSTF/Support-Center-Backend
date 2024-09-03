@@ -1,10 +1,9 @@
-package tn.zeros.smg.services.IServices;
+package tn.rostom.pi.services.IServices;
 
-import tn.zeros.smg.controllers.DTO.LoginResponseDTO;
-import tn.zeros.smg.entities.User;
+import tn.rostom.pi.controllers.DTO.LoginResponseDTO;
+import tn.rostom.pi.entities.User;
 
 public interface IAuthService {
-    User registerUser(User user);
-    LoginResponseDTO login(String code, String password);
+    LoginResponseDTO login(String email, String password);
     void logout();
 }

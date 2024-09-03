@@ -1,14 +1,13 @@
-package tn.zeros.smg.services;
+package tn.rostom.pi.services;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.stereotype.Service;
-import tn.zeros.smg.services.IServices.ITokenService;
+import tn.rostom.pi.services.IServices.ITokenService;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -61,32 +60,4 @@ public class TokenService implements ITokenService {
         Instant expiresAt = jwt.getExpiresAt();
         return expiresAt != null && expiresAt.isBefore(Instant.now());
     }
-
-    @Override
-    public String generateRefreshToken(Authentication auth) {
-        Instant now = Instant.now();
-        Instant expiry = now.plus(7, ChronoUnit.DAYS);
-        String scope = auth.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
-        JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("self")
-                .issuedAt(now)
-                .expiresAt(expiry)
-                .subject(auth.getName())
-                .claim("roles", scope)
-                .claim("type", "refresh")
-                .build();
-        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-    }
-
-    @Override
-    public Map<String, String> generateTokenPair(Authentication auth) {
-        String accessToken = generateJwt(auth);
-        String refreshToken = generateRefreshToken(auth);
-        log.info("access token is: " + accessToken);
-        log.info("refresh token is: " + refreshToken);
-        return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
-    }
-
 }

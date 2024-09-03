@@ -1,4 +1,4 @@
-package tn.zeros.smg.entities;
+package tn.rostom.pi.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
-import tn.zeros.smg.entities.enums.TypeRole;
+import tn.rostom.pi.entities.enums.TypeRole;
 
 @Entity
 @NoArgsConstructor
