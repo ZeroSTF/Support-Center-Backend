@@ -57,14 +57,19 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", 
-                                         "/auth/login", "/auth/logout", "/auth/register", "/auth/login-token","/auth/refresh-token", 
-                                         "/user/verify", "/user/upload/**").permitAll()
-                        .anyRequest().authenticated()
-                )
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**",
+                                "/auth/login", "/auth/logout", "/auth/register", "/auth/login-token",
+                                "/auth/refresh-token",
+                                "/user/verify", "/user/upload/**")
+                        .permitAll()
+                        .requestMatchers("/reclamation/**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/decision/**").hasRole("ADMIN")
+                        .requestMatchers("/appointment/**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/expert/**").hasRole("ADMIN")
+                        .requestMatchers("/availability/**").hasRole("ADMIN")
+                        .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                )
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }

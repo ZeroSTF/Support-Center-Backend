@@ -4,11 +4,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import tn.rostom.pi.entities.Role;
 import tn.rostom.pi.entities.enums.TypeRole;
 import tn.rostom.pi.repositories.RoleRepository;
-import tn.rostom.pi.repositories.UserRepository;
 
 @SpringBootApplication
 public class PiApplication {
