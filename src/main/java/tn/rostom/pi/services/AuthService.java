@@ -46,6 +46,7 @@ public class AuthService implements IAuthService {
             Authentication auth = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(email, password));
             String accessToken = tokenService.generateJwt(auth);
+            String refreshToken = tokenService.generateRefreshToken(auth);
 
             String role = "user";
             Set<Role> roles = user.getRole();
@@ -61,7 +62,7 @@ public class AuthService implements IAuthService {
                 }
             }
 
-            return new LoginResponseDTO(user.getId(), user.getName(), user.getEmail(), role, accessToken);
+            return new LoginResponseDTO(user.getId(), user.getName(), user.getEmail(), role, accessToken, refreshToken);
         } catch (Exception e) {
             log.error("Error during login: ", e);
             throw new RuntimeException("Login failed", e);

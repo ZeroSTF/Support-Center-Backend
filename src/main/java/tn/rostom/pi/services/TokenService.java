@@ -11,6 +11,7 @@ import tn.rostom.pi.services.IServices.ITokenService;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +39,24 @@ public class TokenService implements ITokenService {
     }
 
     @Override
+    public String generateRefreshToken(Authentication auth) {
+        Instant now = Instant.now();
+        Instant expiry = now.plus(7, ChronoUnit.DAYS);
+        String scope = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(" "));
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .expiresAt(expiry)
+                .subject(auth.getName())
+                .claim("roles", scope)
+                .claim("type", "refresh")
+                .build();
+        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    @Override
     public Jwt decodeJwt(String token) {
         try {
             return jwtDecoder.decode(token);
@@ -58,5 +77,12 @@ public class TokenService implements ITokenService {
         Jwt jwt = this.decodeJwt(token);
         Instant expiresAt = jwt.getExpiresAt();
         return expiresAt != null && expiresAt.isBefore(Instant.now());
+    }
+
+    @Override
+    public Map<String, String> generateTokenPair(Authentication auth) {
+        String accessToken = generateJwt(auth);
+        String refreshToken = generateRefreshToken(auth);
+        return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
     }
 }

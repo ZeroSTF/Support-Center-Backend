@@ -2,8 +2,15 @@ package tn.rostom.pi.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.web.bind.annotation.*;
 import tn.rostom.pi.controllers.DTO.LoginDTO;
 import tn.rostom.pi.controllers.DTO.LoginResponseDTO;
@@ -11,6 +18,7 @@ import tn.rostom.pi.controllers.DTO.LogoutResponseDTO;
 import tn.rostom.pi.exceptions.InvalidCredentialsException;
 import tn.rostom.pi.services.IServices.IAuthService;
 import tn.rostom.pi.services.IServices.ITokenService;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,6 +28,7 @@ import tn.rostom.pi.services.IServices.ITokenService;
 public class AuthenticationController {
     private final IAuthService authService;
     private final ITokenService tokenService;
+    private final UserDetailsService userDetailsService;
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginDTO body) {
@@ -54,6 +63,24 @@ public class AuthenticationController {
         } catch (Exception e) {
             log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+        }
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestHeader("RefreshToken") String refreshToken) {
+        try {
+            Jwt decodedRefreshToken = tokenService.decodeJwt(refreshToken);
+            if (!"refresh".equals(decodedRefreshToken.getClaim("type"))) {
+                throw new InvalidBearerTokenException("Invalid token type");
+            }
+            String username = decodedRefreshToken.getSubject();
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
+                    null, userDetails.getAuthorities());
+            Map<String, String> tokens = tokenService.generateTokenPair(authentication);
+            return ResponseEntity.ok(tokens);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
     }
 

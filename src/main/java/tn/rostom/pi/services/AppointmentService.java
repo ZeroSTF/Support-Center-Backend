@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import tn.rostom.pi.entities.Appointment;
-import tn.rostom.pi.entities.Availability;
 import tn.rostom.pi.entities.Expert;
 import tn.rostom.pi.entities.User;
 import tn.rostom.pi.repositories.AppointmentRepository;
