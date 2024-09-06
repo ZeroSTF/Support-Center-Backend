@@ -92,7 +92,7 @@ public class AuthService implements IAuthService {
             Set<Role> authorities = new HashSet<>();
             authorities.add(userRole);
             user.setPassword(encodedPassword);
-            user.setStatus(UStatus.Unconfirmed);
+            user.setStatus(UStatus.Active);
             user.setRole(authorities);
             User savedUser = userRepository.save(user);
             return savedUser;
