@@ -15,9 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import tn.rostom.pi.controllers.DTO.LoginDTO;
 import tn.rostom.pi.controllers.DTO.LoginResponseDTO;
 import tn.rostom.pi.controllers.DTO.LogoutResponseDTO;
+import tn.rostom.pi.controllers.DTO.RegistrationDTO;
+import tn.rostom.pi.controllers.DTO.UserDTO;
+import tn.rostom.pi.entities.User;
 import tn.rostom.pi.exceptions.InvalidCredentialsException;
 import tn.rostom.pi.services.IServices.IAuthService;
 import tn.rostom.pi.services.IServices.ITokenService;
+import tn.rostom.pi.services.IServices.IUserService;
+
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 @RestController
@@ -29,6 +34,7 @@ public class AuthenticationController {
     private final IAuthService authService;
     private final ITokenService tokenService;
     private final UserDetailsService userDetailsService;
+    private final IUserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginDTO body) {
@@ -39,6 +45,17 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong code or password");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody RegistrationDTO body) {
+        User user = User.builder().name(body.getName()).email(body.getEmail()).password(body.getPassword()).build();
+        User registeredUser = authService.registerUser(user);
+        if (registeredUser != null) {
+            return ResponseEntity.ok(registeredUser);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
         }
     }
 
@@ -82,6 +99,14 @@ public class AuthenticationController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
+    }
+
+    @GetMapping("/current")
+    public ResponseEntity<?> getCurrent() {
+        User currentUser = userService.getCurrentUser();
+        String role = userService.getRoleString(currentUser);
+        return ResponseEntity.ok()
+                .body(new UserDTO(currentUser.getId(), currentUser.getEmail(), currentUser.getName(), role));
     }
 
 }

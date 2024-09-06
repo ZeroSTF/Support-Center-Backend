@@ -9,14 +9,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import jakarta.persistence.EntityNotFoundException;
 import tn.rostom.pi.controllers.DTO.LoginResponseDTO;
 import tn.rostom.pi.entities.Role;
 import tn.rostom.pi.entities.User;
 import tn.rostom.pi.entities.enums.UStatus;
 import tn.rostom.pi.exceptions.InvalidCredentialsException;
+import tn.rostom.pi.repositories.RoleRepository;
 import tn.rostom.pi.repositories.UserRepository;
 import tn.rostom.pi.services.IServices.IAuthService;
 import tn.rostom.pi.services.IServices.ITokenService;
+
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -25,6 +30,7 @@ import java.util.Set;
 @Slf4j
 public class AuthService implements IAuthService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     private final PasswordEncoder encoder;
 
@@ -72,6 +78,28 @@ public class AuthService implements IAuthService {
     @Override
     public void logout() {
         SecurityContextHolder.clearContext();
+    }
+
+    @Override
+    public User registerUser(User user) {
+        try {
+            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+                throw new IllegalArgumentException("Email already exists");
+            }
+            String encodedPassword = encoder.encode(user.getPassword());
+            Role userRole = roleRepository.findById(2L)
+                    .orElseThrow(() -> new EntityNotFoundException("Role not found"));
+            Set<Role> authorities = new HashSet<>();
+            authorities.add(userRole);
+            user.setPassword(encodedPassword);
+            user.setStatus(UStatus.Unconfirmed);
+            user.setRole(authorities);
+            User savedUser = userRepository.save(user);
+            return savedUser;
+        } catch (Exception e) {
+            log.error("Error registering user: ", e);
+            throw new RuntimeException("Failed to register user", e);
+        }
     }
 
 }
