@@ -3,6 +3,7 @@ package tn.rostom.pi.services;
 import java.util.Iterator;
 import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import org.springframework.security.core.Authentication;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService implements IUserService {
     private final UserRepository userRepository;
 
@@ -24,6 +26,7 @@ public class UserService implements IUserService {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
+            log.info("email: {}", email);
             return userRepository.findByEmail(email)
                     .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
         } catch (Exception e) {

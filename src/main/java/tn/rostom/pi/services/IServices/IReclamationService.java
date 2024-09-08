@@ -18,6 +18,4 @@ public interface IReclamationService {
     List<Reclamation> getReclamationsByUserId(Long userId);
 
     boolean deleteReclamation(Long id);
-
-    Decision makeDecision(Long reclamationId, Decision decision, User admin);
 }

@@ -32,6 +32,11 @@ public class DecisionController {
         return ResponseEntity.ok(decisionService.getDecision(id));
     }
 
+    @GetMapping("getDecisionByRecId/{reclamationId}")
+    public ResponseEntity<Decision> getDecisionByRecId(@PathVariable Long reclamationId) {
+        return ResponseEntity.ok(decisionService.getDecisionByRecId(reclamationId));
+    }
+
     @GetMapping
     public ResponseEntity<List<Decision>> getAllDecisions() {
         return ResponseEntity.ok(decisionService.getDecisions());

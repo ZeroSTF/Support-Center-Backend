@@ -10,4 +10,5 @@ public interface IDecisionService {
     boolean deleteDecision(Long id);
     Decision getDecision(Long id);
     List<Decision> getDecisions();
+    Decision getDecisionByRecId(Long reclamationId);
 }

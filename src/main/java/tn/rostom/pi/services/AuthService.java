@@ -43,10 +43,10 @@ public class AuthService implements IAuthService {
     public LoginResponseDTO login(String email, String password) {
         try {
             User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new InvalidCredentialsException("Wrong code or password"));
+                    .orElseThrow(() -> new InvalidCredentialsException("Wrong email or password"));
 
             if (!encoder.matches(password, user.getPassword()) || !user.getStatus().equals(UStatus.Active)) {
-                throw new InvalidCredentialsException("Wrong code or password");
+                throw new InvalidCredentialsException("Wrong email or password");
             }
 
             Authentication auth = authenticationManager
@@ -94,8 +94,7 @@ public class AuthService implements IAuthService {
             user.setPassword(encodedPassword);
             user.setStatus(UStatus.Active);
             user.setRole(authorities);
-            User savedUser = userRepository.save(user);
-            return savedUser;
+            return userRepository.save(user);
         } catch (Exception e) {
             log.error("Error registering user: ", e);
             throw new RuntimeException("Failed to register user", e);

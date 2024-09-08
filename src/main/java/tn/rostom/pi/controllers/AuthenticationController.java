@@ -38,6 +38,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginDTO body) {
+        log.info("Logging in user: {}", body.getEmail());
         try {
             LoginResponseDTO response = authService.login(body.getEmail(), body.getPassword());
             return ResponseEntity.ok(response);
@@ -71,6 +72,7 @@ public class AuthenticationController {
 
     @GetMapping("/check-token")
     public ResponseEntity<Boolean> checkToken(@RequestHeader("AccessToken") String token) {
+        log.info("Checking token: {}", token);
         try {
             if (tokenService.isTokenExpired(token)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
@@ -85,6 +87,7 @@ public class AuthenticationController {
 
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@RequestHeader("RefreshToken") String refreshToken) {
+        log.info("Refreshing token: {}", refreshToken);
         try {
             Jwt decodedRefreshToken = tokenService.decodeJwt(refreshToken);
             if (!"refresh".equals(decodedRefreshToken.getClaim("type"))) {

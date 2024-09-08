@@ -53,21 +53,6 @@ public class ReclamationService implements IReclamationService {
     }
 
     @Override
-    public Decision makeDecision(Long reclamationId, Decision decision, User admin) {
-        Reclamation reclamation = reclamationRepository.findById(reclamationId)
-                .orElseThrow(() -> new EntityNotFoundException("Reclamation not found"));
-
-        decision.setReclamation(reclamation);
-        decision.setAdmin(admin);
-        decision.setDate(LocalDateTime.now());
-
-        reclamation.setStatus("Decided");
-        reclamationRepository.save(reclamation);
-
-        return decisionRepository.save(decision);
-    }
-
-    @Override
     public List<Reclamation> getAllReclamations() {
         return reclamationRepository.findAll();
     }

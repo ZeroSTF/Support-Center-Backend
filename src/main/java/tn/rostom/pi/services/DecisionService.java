@@ -36,7 +36,7 @@ public class DecisionService implements IDecisionService {
         decision.setAdmin(admin);
         decision.setDate(LocalDateTime.now());
         
-        reclamation.setStatus("Decided");
+        reclamation.setStatus("Closed");
         reclamationRepository.save(reclamation);
         
         return decisionRepository.save(decision);
@@ -63,5 +63,10 @@ public class DecisionService implements IDecisionService {
     @Override
     public List<Decision> getDecisions() {
         return decisionRepository.findAll();
+    }
+
+    @Override
+    public Decision getDecisionByRecId(Long reclamationId) {
+        return decisionRepository.findByReclamationId(reclamationId);
     }
 }
