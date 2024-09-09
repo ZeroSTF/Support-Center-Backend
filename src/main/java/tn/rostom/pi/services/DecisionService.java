@@ -1,6 +1,7 @@
 package tn.rostom.pi.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DecisionService implements IDecisionService {
     private final DecisionRepository decisionRepository;
     private final ReclamationRepository reclamationRepository;
@@ -50,6 +52,7 @@ public class DecisionService implements IDecisionService {
         User admin = userRepository.findById(adminId)
                 .orElseThrow(() -> new EntityNotFoundException("Admin not found with id: " + adminId));
 
+        log.info("reclamation is: " + reclamation);
         decision.setReclamation(reclamation);
         decision.setAdmin(admin);
         return decisionRepository.save(decision);
