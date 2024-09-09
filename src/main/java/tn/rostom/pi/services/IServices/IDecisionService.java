@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IDecisionService {
     Decision addDecision(Decision decision, Long reclamationId, Long adminId);
-    Decision updateDecision(Decision decision);
+    Decision updateDecision(Decision decision, Long reclamationId, Long adminId);
     boolean deleteDecision(Long id);
     Decision getDecision(Long id);
     List<Decision> getDecisions();

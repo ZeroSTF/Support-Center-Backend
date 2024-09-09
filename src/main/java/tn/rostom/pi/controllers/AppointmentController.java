@@ -57,8 +57,10 @@ public class AppointmentController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Appointment> updateAppointment(@RequestBody Appointment appointment) {
-        return ResponseEntity.ok(appointmentService.updateAppointment(appointment));
+    public ResponseEntity<Appointment> updateAppointment(@RequestBody Appointment appointment,
+                                                         @RequestParam Long userId,
+                                                         @RequestParam Long expertId) {
+        return ResponseEntity.ok(appointmentService.updateAppointment(appointment, userId, expertId));
     }
 
     @DeleteMapping("/{id}")

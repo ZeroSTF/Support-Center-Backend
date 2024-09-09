@@ -40,7 +40,17 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public Appointment updateAppointment(Appointment appointment) {
+    public Appointment updateAppointment(Appointment appointment, Long userId, Long expertId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+
+        Expert expert = expertRepository.findById(expertId)
+                .orElseThrow(() -> new EntityNotFoundException("Expert not found with id: " + expertId));
+        if (!availabilityService.isExpertAvailable(expert, appointment.getDate())) {
+            throw new IllegalStateException("Expert is not available at the requested time");
+        }
+        appointment.setUser(user);
+        appointment.setExpert(expert);
         return appointmentRepository.save(appointment);
     }
 

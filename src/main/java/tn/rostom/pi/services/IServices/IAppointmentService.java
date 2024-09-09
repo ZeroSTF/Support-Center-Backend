@@ -7,7 +7,7 @@ import tn.rostom.pi.entities.Appointment;
 public interface IAppointmentService {
     Appointment addAppointment(Appointment appointment, Long userId, Long expertId);
 
-    Appointment updateAppointment(Appointment appointment);
+    Appointment updateAppointment(Appointment appointment, Long userId, Long expertId);
 
     boolean deleteAppointment(Long id);
 

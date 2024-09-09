@@ -43,8 +43,10 @@ public class DecisionController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Decision> updateDecision(@RequestBody Decision decision) {
-        return ResponseEntity.ok(decisionService.updateDecision(decision));
+    public ResponseEntity<Decision> updateDecision(@RequestBody Decision decision,
+                                                   @RequestParam Long reclamationId,
+                                                   @RequestParam Long adminId) {
+        return ResponseEntity.ok(decisionService.updateDecision(decision, reclamationId, adminId));
     }
 
     @DeleteMapping("/{id}")

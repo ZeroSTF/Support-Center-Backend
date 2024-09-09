@@ -43,7 +43,15 @@ public class DecisionService implements IDecisionService {
     }
 
     @Override
-    public Decision updateDecision(Decision decision) {
+    public Decision updateDecision(Decision decision, Long reclamationId, Long adminId) {
+        Reclamation reclamation = reclamationRepository.findById(reclamationId)
+                .orElseThrow(() -> new EntityNotFoundException("Reclamation not found with id: " + reclamationId));
+
+        User admin = userRepository.findById(adminId)
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found with id: " + adminId));
+
+        decision.setReclamation(reclamation);
+        decision.setAdmin(admin);
         return decisionRepository.save(decision);
     }
 
